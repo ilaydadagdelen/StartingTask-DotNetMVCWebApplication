@@ -1,0 +1,47 @@
+﻿@model StartingTask.Models.Login
+
+@{
+    ViewBag.Title = "Login";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal p-5">
+        <h4>Login</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group pb-2">
+            <label for="Password" class="control-label col-md-2">Şifre</label>
+            <div class="col-md-10">
+                <input type="password" id="Password" name="Password" class="form-control" />
+                <span class="text-danger">@Html.ValidationMessageFor(model => model.Password)</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Login" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+<h5 class="p-5", style="color:red">@ViewBag.Message</h5>
+<div class="p-5">
+    <h8>Hesabınız yok mu?</h8>
+    @Html.ActionLink("Kayıt olmak için tıklayın", "SignUp")
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

@@ -1,0 +1,95 @@
+﻿@model IEnumerable<StartingTask.Models.Subject>
+
+<div class="d-flex" id="wrapper">
+    <div class="border-end bg-white" id="sidebar-wrapper">
+        <div class="sidebar-heading border-bottom bg-light">Dersler</div>
+        <input type="text" id="searchInput" class="border-bottom bg-light form-control mb-3" placeholder="Arama yapın...">
+
+        <div class="list-group list-group-flush">
+            @foreach (var item1 in Model.GroupBy(x => x.Lesson))
+            {
+                var lessonGroup = item1.First();
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" data-bs-toggle="collapse" href="#@lessonGroup.GroupID" role="button" aria-expanded="false" aria-controls="@lessonGroup.GroupID">@lessonGroup.Lesson</a>
+                <div class="collapse" id="@lessonGroup.GroupID">
+                    @foreach (var item2 in item1.GroupBy(x => x.Group))
+                    {
+                        var group = item2.First();
+                        <a class="list-group-item list-group-item-action list-group-item-light ps-4" data-bs-toggle="collapse" href="#@group.NameID" role="button" aria-expanded="false" aria-controls="@group.NameID">@group.Group</a>
+                        <div class="collapse" id="@group.NameID">
+                            @foreach (var item3 in item2)
+                            {
+                                <a class="list-group-item list-group-item-action list-group-item-light ps-5 video-link" href="javascript:void(0);" data-video-url="@item3.Link">@item3.Name</a>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <div id="page-content-wrapper">
+
+        <div class="container-fluid">
+            <h1 class="mt-4">Simple Sidebar</h1>
+            <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
+            <p>
+                Make sure to keep all page content within the
+                <code>#page-content-wrapper</code>
+                . The top navbar is optional, and just for demonstration. Just create an element with the
+                <code>#sidebarToggle</code>
+                ID which will toggle the menu when clicked.
+            </p>
+            <iframe id="video-player" width="560" height="315" src="https://www.youtube.com/embed/GkAlnrN8PF0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+
+            $('.list-group-item').each(function () {
+                var itemText = $(this).text().toLowerCase(); 
+
+                if (itemText.includes(searchText)) {
+                    $(this).show(); 
+                } else {
+                    $(this).hide(); 
+                }
+            });
+
+            $('.collapse').each(function () {
+                var collapseItems = $(this).find('.list-group-item'); 
+                var hasMatch = false;
+
+                collapseItems.each(function () {
+                    var collapseText = $(this).text().toLowerCase();
+                    if (collapseText.includes(searchText)) {
+                        hasMatch = true;
+                    }
+                });
+
+                if (hasMatch) {
+                    $(this).collapse('show');
+                } else {
+                    $(this).collapse('hide');
+                }
+            });
+        });
+
+        $(document).on('click', '.video-link', function () {
+            var videoUrl = $(this).data('video-url'); 
+            var iframeSrc = "https://www.youtube.com/embed/" + extractVideoId(videoUrl);  
+            $('#video-player').attr('src', iframeSrc);  
+        });
+
+        function extractVideoId(url) {
+            var regex = /(?:https?:\/\/(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|(?:www\.)?youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            var match = url.match(regex);
+            return match ? match[1] : '';
+        }
+    });
+</script>
